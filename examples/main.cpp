@@ -8,6 +8,7 @@
 #include <iostream>
 #include <vector>
 
+#include "zip_compress/zip_reader.h"
 #include "zip_compress/zip_writer.h"
 
 namespace fs = ghc::filesystem;
@@ -43,15 +44,36 @@ void test_zip_compression()
   }
 }
 
-// 测试递归压缩文件夹
-void test_compress_folder(const std::string& folder_path, const std::string& zip_path)
+// 测试递归压缩多级文件夹
+void test_compress_multilevel_folder(const std::string& folder_path, const std::string& zip_path)
 {
-  // 创建测试文件夹及文件
-  fs::create_directory(folder_path);
-  for (int i = 0; i < 5; ++i)
+  // 创建多级文件夹结构
+  fs::create_directories(folder_path + "/subdir1");
+  fs::create_directories(folder_path + "/subdir2/nested");
+
+  // 根目录文件
+  for (int i = 0; i < 3; ++i)
   {
-    std::ofstream out(fs::path(folder_path) / ("file" + std::to_string(i) + ".dat"), std::ios::binary);
-    std::vector<char> buffer(1024 * 1024, i);  // 1MB 数据
+    std::ofstream out(fs::path(folder_path) / ("file_root_" + std::to_string(i) + ".dat"), std::ios::binary);
+    std::vector<char> buffer(512 * 1024, i);  // 0.5MB
+    out.write(buffer.data(), buffer.size());
+  }
+
+  // subdir1 文件
+  for (int i = 0; i < 2; ++i)
+  {
+    std::ofstream out(fs::path(folder_path) / "subdir1" / ("file_sub1_" + std::to_string(i) + ".dat"),
+                      std::ios::binary);
+    std::vector<char> buffer(256 * 1024, i + 10);  // 0.25MB
+    out.write(buffer.data(), buffer.size());
+  }
+
+  // subdir2/nested 文件
+  for (int i = 0; i < 2; ++i)
+  {
+    std::ofstream out(fs::path(folder_path) / "subdir2/nested" / ("file_nested_" + std::to_string(i) + ".dat"),
+                      std::ios::binary);
+    std::vector<char> buffer(128 * 1024, i + 20);  // 0.125MB
     out.write(buffer.data(), buffer.size());
   }
 
@@ -59,18 +81,17 @@ void test_compress_folder(const std::string& folder_path, const std::string& zip
   {
     zip_compress::ZipWriter writer(zip_path);
 
-    // 遍历文件夹，跳过目标 ZIP 文件
+    // 遍历文件夹，递归添加所有文件，保持相对路径
     for (auto& entry : fs::recursive_directory_iterator(folder_path))
     {
       if (fs::is_regular_file(entry))
       {
-        if (entry.path().string() == zip_path) continue;
-        writer.add_file(entry.path().string(), folder_path);
+        writer.add_file(entry.path().string(), folder_path);  // 第二参数是基准路径
       }
     }
 
     writer.finish();
-    std::cout << "Folder ZIP created successfully: " << zip_path << std::endl;
+    std::cout << "Multi-level folder ZIP created successfully: " << zip_path << std::endl;
   }
   catch (const std::exception& e)
   {
@@ -78,9 +99,45 @@ void test_compress_folder(const std::string& folder_path, const std::string& zip
   }
 }
 
+// ------------------ 解压测试 ------------------
+void test_zip_extraction()
+{
+  try
+  {
+    zip_compress::ZipReader reader("test.zip");
+    std::cout << "\n--- test.zip ---" << std::endl;
+    for (const auto& f : reader.file_list()) std::cout << f << std::endl;
+
+    const std::string extract_folder = "extract_test";
+    reader.extract_all(extract_folder);
+    std::cout << "Extracted all files to: " << extract_folder << std::endl;
+
+    // 解压单个文件
+    const auto& files = reader.file_list();
+    if (!files.empty())
+    {
+      const std::string single_file = files[0];
+      const std::string single_output = "extract_single/" + fs::path(single_file).filename().string();
+      reader.extract_file(single_file, single_output);
+      std::cout << "Extracted single file: " << single_output << std::endl;
+    }
+
+    // 测试文件夹 ZIP 解压
+    zip_compress::ZipReader folder_reader("folder_test.zip");
+    const std::string folder_extract = "extract_folder_test";
+    folder_reader.extract_all(folder_extract);
+    std::cout << "Extracted folder ZIP to: " << folder_extract << std::endl;
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << "Extraction exception: " << e.what() << std::endl;
+  }
+}
+
 int main()
 {
   test_zip_compression();
-  test_compress_folder("test_folder", "folder_test.zip");
+  test_compress_multilevel_folder("test_folder", "folder_test.zip");
+  test_zip_extraction();
   return 0;
 }
