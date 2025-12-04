@@ -3,6 +3,7 @@
 #define NOMINMAX
 #endif
 
+#include <cstdlib>
 #include <fstream>
 #include <ghc/filesystem.hpp>  // 或 std::filesystem
 #include <iostream>
@@ -124,6 +125,8 @@ void test_zip_extraction()
 
     // 测试文件夹 ZIP 解压
     zip_compress::ZipReader folder_reader("folder_test.zip");
+    std::cout << "\n--- folder_test.zip ---" << std::endl;
+    for (const auto& f : folder_reader.file_list()) std::cout << f << std::endl;
     const std::string folder_extract = "extract_folder_test";
     folder_reader.extract_all(folder_extract);
     std::cout << "Extracted folder ZIP to: " << folder_extract << std::endl;
@@ -136,6 +139,10 @@ void test_zip_extraction()
 
 int main()
 {
+#if defined(_WIN32)
+  std::system("chcp 65001 > nul");  // 切换到 UTF-8 编码（仅 Windows）
+#endif
+  std::cout << u8"你好，世界！" << std::endl;
   test_zip_compression();
   test_compress_multilevel_folder("test_folder", "folder_test.zip");
   test_zip_extraction();
