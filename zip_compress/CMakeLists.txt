@@ -12,7 +12,7 @@ target_sources(${tgt_name} PUBLIC ${headers}) # 头文件作为公共接口，�
 target_sources(${tgt_name} PRIVATE ${sources}) # 源文件仅供内部使用
 
 add_subdirectory(3rd/miniz)
-target_link_libraries(${tgt_name} PRIVATE miniz-inline)
+target_link_libraries(${tgt_name} PUBLIC miniz-inline)
 
 # 假设 ghc_filesystem, 是通过 add_subdirectory(3rd/filesystem) 添加的目标
 if (CMAKE_CXX_STANDARD AND CMAKE_CXX_STANDARD LESS 17)
