@@ -1,9 +1,9 @@
-#include "zip_compress/zip_writer.h"
-
 // 避免 Windows min/max 宏污染
 #ifdef _WIN32
 #define NOMINMAX
 #endif
+
+#include "zip_compress/zip_writer.h"
 
 #include <stdexcept>
 
