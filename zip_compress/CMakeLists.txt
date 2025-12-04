@@ -14,6 +14,12 @@ target_sources(${tgt_name} PRIVATE ${sources}) # 源文件仅供内部使用
 add_subdirectory(3rd/miniz)
 target_link_libraries(${tgt_name} PRIVATE miniz-inline)
 
+# 假设 ghc_filesystem, 是通过 add_subdirectory(3rd/filesystem) 添加的目标
+if (CMAKE_CXX_STANDARD AND CMAKE_CXX_STANDARD LESS 17)
+    target_link_libraries(${tgt_name} PRIVATE ghc_filesystem)
+endif()
+
+
 # 设置包含目录，供编译器查找头文件
 target_include_directories(${tgt_name} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>

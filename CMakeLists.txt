@@ -30,4 +30,13 @@ enable_testing()  # 允许 add_test() 添加测试, 须放在 add_test() 之前
 # 添加子目录
 add_subdirectory(zip_compress)
 add_subdirectory(examples)
+
+# 根据C++标准版本选择文件系统库, 供zip_compress使用
+if (CMAKE_CXX_STANDARD AND CMAKE_CXX_STANDARD LESS 17)
+    message(STATUS "Using ghc::filesystem (C++11/14)")
+    add_subdirectory(3rd/filesystem)
+else()
+    message(STATUS "Using std::filesystem (C++17+)")
+endif()
+
 # add_subdirectory(tests)
