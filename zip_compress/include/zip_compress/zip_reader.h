@@ -25,6 +25,12 @@ class ZipReader
   explicit ZipReader(const std::string& zip_path);
   ~ZipReader();
 
+  ZipReader(const ZipReader&) = delete;
+  ZipReader& operator=(const ZipReader&) = delete;
+
+  ZipReader(ZipReader&&) = delete;
+  ZipReader& operator=(ZipReader&&) = delete;
+
   // 获取 ZIP 内文件相对路径列表
   std::vector<std::string> file_list() const;
 

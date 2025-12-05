@@ -23,6 +23,12 @@ class ZipWriter
   explicit ZipWriter(const std::string& zip_path);
   ~ZipWriter();
 
+  ZipWriter(const ZipWriter&) = delete;
+  ZipWriter& operator=(const ZipWriter&) = delete;
+
+  ZipWriter(ZipWriter&&) = delete;
+  ZipWriter& operator=(ZipWriter&&) = delete;
+
   // 添加单个文件
   void add_file(const std::string& file_path, const std::string& base_path = "");
 
