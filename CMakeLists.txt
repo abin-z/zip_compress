@@ -29,7 +29,8 @@ enable_testing()  # 允许 add_test() 添加测试, 须放在 add_test() 之前
 
 # 添加子目录
 add_subdirectory(zip_compress)
-add_subdirectory(examples)
+add_subdirectory(examples) 
+add_subdirectory(tests)
 
 # 根据C++标准版本选择文件系统库, 供zip_compress使用
 if (CMAKE_CXX_STANDARD AND CMAKE_CXX_STANDARD LESS 17)

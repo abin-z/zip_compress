@@ -10,7 +10,8 @@ add_executable(${tgt_name} ${SOURCES})
 target_link_libraries(${tgt_name} PRIVATE ${THREAD_LIB})
 # 链接 zip_compress 库
 target_link_libraries(${tgt_name} PRIVATE zip_compress)
+target_link_libraries(${tgt_name} PRIVATE ghc_filesystem)
 # Catch2 测试框架
 target_include_directories(${tgt_name}  PRIVATE
-    ${PROJECT_SOURCE_DIR}/3rd/catch2_v2/single_include
+    ${PROJECT_SOURCE_DIR}/3rd/Catch2/single_include
 )
