@@ -117,27 +117,11 @@ std::string s(data.begin(), data.end());
 | `extract_file(name, output)`   | 解压单个文件至硬盘           |
 | `extract_file_to_memory(name)` | 解压文件到 `vector<uint8_t>` |
 
-### 🛠️ 编译环境
-
-推荐环境：
-
-| 平台                 | 编译器      |
-| -------------------- | ----------- |
-| Ubuntu / Rocky Linux | GCC ≥ 4.8   |
-| Windows              | MSVC ≥ 2015 |
-| 跨平台               | Clang ≥ 3.5 |
-
 ### 📜 License
 
-本项目使用 **MIT License**。
-
-```txt
-MIT License
-Copyright (c) 2025 Abin
-```
+本项目使用[ **MIT License**](LICENSE)
 
 ### 🤝 贡献 & 反馈
 
 欢迎提出 Issue / PR
-如果你想扩展功能（比如 ZIP 加密、流式压缩、断点续压），也可以告诉我，我可以一起帮你设计结构。
 
