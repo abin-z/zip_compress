@@ -82,6 +82,11 @@ void ZipReader::extract_all(const std::string& output_folder)
       throw std::runtime_error("Failed to get file info at index: " + std::to_string(i));
 
     fs::path out_path = fs::path(output_folder) / stat.m_filename;
+    if (stat.m_is_directory) // 是目录则创建目录
+    {
+      fs::create_directories(out_path);
+      continue;
+    }
     fs::create_directories(out_path.parent_path());
 
     if (!mz_zip_reader_extract_to_file(&zip_, i, out_path.string().c_str(), 0))
