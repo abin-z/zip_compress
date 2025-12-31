@@ -20,7 +20,7 @@ namespace fs = std::filesystem;
 using namespace zip_compress;
 
 // 工具函数：写文件
-static void write_file(const fs::path& path, const std::string& content)
+static void write_file(const fs::path &path, const std::string &content)
 {
   std::ofstream ofs(path.string(), std::ios::binary);
   REQUIRE(ofs.is_open());
@@ -28,7 +28,7 @@ static void write_file(const fs::path& path, const std::string& content)
 }
 
 // 工具函数：读文件
-static std::string read_file(const fs::path& path)
+static std::string read_file(const fs::path &path)
 {
   std::ifstream ifs(path.string(), std::ios::binary);
   REQUIRE(ifs.is_open());
@@ -36,7 +36,7 @@ static std::string read_file(const fs::path& path)
 }
 
 // 工具函数：把路径统一为 ZIP 内部格式 ("/")
-static std::string zip_path(const fs::path& p)
+static std::string zip_path(const fs::path &p)
 {
   std::string s = p.generic_string();  // fs::path::generic_string() 用 "/" 分隔
   return s;
@@ -72,7 +72,7 @@ TEST_CASE("ZipWriter + ZipReader cross-platform tests")
     auto files = reader.file_list();
 
     // 统一路径
-    for (auto& f : files) std::replace(f.begin(), f.end(), '\\', '/');
+    for (auto &f : files) std::replace(f.begin(), f.end(), '\\', '/');
 
     REQUIRE(files.size() == 3);
     REQUIRE(std::find(files.begin(), files.end(), "a.txt") != files.end());

@@ -20,23 +20,23 @@ namespace zip_compress
 class ZipWriter
 {
  public:
-  explicit ZipWriter(const std::string& zip_path);
+  explicit ZipWriter(const std::string &zip_path);
   ~ZipWriter();
 
-  ZipWriter(const ZipWriter&) = delete;
-  ZipWriter& operator=(const ZipWriter&) = delete;
+  ZipWriter(const ZipWriter &) = delete;
+  ZipWriter &operator=(const ZipWriter &) = delete;
 
-  ZipWriter(ZipWriter&&) = delete;
-  ZipWriter& operator=(ZipWriter&&) = delete;
+  ZipWriter(ZipWriter &&) = delete;
+  ZipWriter &operator=(ZipWriter &&) = delete;
 
   // 添加单个文件
-  void add_file(const std::string& file_path, const std::string& base_path = "");
+  void add_file(const std::string &file_path, const std::string &base_path = "");
 
   // 添加内存数据作为文件
-  void add_data(const std::string& filename_in_zip, const void* data, size_t size);
+  void add_data(const std::string &filename_in_zip, const void *data, size_t size);
 
   // 添加整个文件夹（递归）
-  void add_folder(const std::string& folder_path);
+  void add_folder(const std::string &folder_path);
 
   // 完成压缩（析构会自动调用）
   void finish();

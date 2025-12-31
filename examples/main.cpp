@@ -40,14 +40,14 @@ void test_zip_compression()
     writer.finish();
     std::cout << "ZIP created successfully" << std::endl;
   }
-  catch (const std::exception& e)
+  catch (const std::exception &e)
   {
     std::cerr << "Exception: " << e.what() << std::endl;
   }
 }
 
 // 测试递归压缩多级文件夹
-void test_compress_multilevel_folder(const std::string& folder_path, const std::string& zip_path)
+void test_compress_multilevel_folder(const std::string &folder_path, const std::string &zip_path)
 {
   // 创建多级文件夹结构
   fs::create_directories(folder_path + "/subdir1");
@@ -84,7 +84,7 @@ void test_compress_multilevel_folder(const std::string& folder_path, const std::
     zip_compress::ZipWriter writer(zip_path);
 
     // 遍历文件夹，递归添加所有文件，保持相对路径
-    for (auto& entry : fs::recursive_directory_iterator(folder_path))
+    for (auto &entry : fs::recursive_directory_iterator(folder_path))
     {
       if (fs::is_regular_file(entry))
       {
@@ -95,7 +95,7 @@ void test_compress_multilevel_folder(const std::string& folder_path, const std::
     writer.finish();
     std::cout << "Multi-level folder ZIP created successfully: " << zip_path << std::endl;
   }
-  catch (const std::exception& e)
+  catch (const std::exception &e)
   {
     std::cerr << "Exception: " << e.what() << std::endl;
   }
@@ -108,14 +108,14 @@ void test_zip_extraction()
   {
     zip_compress::ZipReader reader("test.zip");
     std::cout << "\n--- test.zip ---" << std::endl;
-    for (const auto& f : reader.file_list()) std::cout << f << std::endl;
+    for (const auto &f : reader.file_list()) std::cout << f << std::endl;
 
     const std::string extract_folder = "extract_test";
     reader.extract_all(extract_folder);
     std::cout << "Extracted all files to: " << extract_folder << std::endl;
 
     // 解压单个文件
-    const auto& files = reader.file_list();
+    const auto &files = reader.file_list();
     if (!files.empty())
     {
       const std::string single_file = files[0];
@@ -127,12 +127,12 @@ void test_zip_extraction()
     // 测试文件夹 ZIP 解压
     zip_compress::ZipReader folder_reader("folder_test.zip");
     std::cout << "\n--- folder_test.zip ---" << std::endl;
-    for (const auto& f : folder_reader.file_list()) std::cout << f << std::endl;
+    for (const auto &f : folder_reader.file_list()) std::cout << f << std::endl;
     const std::string folder_extract = "extract_folder_test";
     folder_reader.extract_all(folder_extract);
     std::cout << "Extracted folder ZIP to: " << folder_extract << std::endl;
   }
-  catch (const std::exception& e)
+  catch (const std::exception &e)
   {
     std::cerr << "Extraction exception: " << e.what() << std::endl;
   }
@@ -149,12 +149,11 @@ void test_update_package()
     reader.extract_all(extract_folder);
     std::cout << "Upgrade package extracted to: " << extract_folder << std::endl;
   }
-  catch (const std::exception& e)
+  catch (const std::exception &e)
   {
     std::cerr << "!!!!! Update package extraction exception: " << e.what() << std::endl;
   }
 }
-
 
 int main()
 {

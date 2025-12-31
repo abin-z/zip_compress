@@ -29,7 +29,7 @@ namespace fs = ghc::filesystem;
 namespace zip_compress
 {
 
-ZipReader::ZipReader(const std::string& zip_path) : opened_(false)
+ZipReader::ZipReader(const std::string &zip_path) : opened_(false)
 {
   zip_ = {};
   if (!mz_zip_reader_init_file(&zip_, zip_path.c_str(), 0))
@@ -52,14 +52,14 @@ std::vector<std::string> ZipReader::file_list() const
 {
   if (!opened_) throw std::runtime_error("ZIP file not opened");
 
-  mz_uint num_files = mz_zip_reader_get_num_files(const_cast<mz_zip_archive*>(&zip_));
+  mz_uint num_files = mz_zip_reader_get_num_files(const_cast<mz_zip_archive *>(&zip_));
   std::vector<std::string> files;
   files.reserve(num_files);
 
   for (mz_uint i = 0; i < num_files; ++i)
   {
     mz_zip_archive_file_stat stat;
-    if (!mz_zip_reader_file_stat(const_cast<mz_zip_archive*>(&zip_), i, &stat))
+    if (!mz_zip_reader_file_stat(const_cast<mz_zip_archive *>(&zip_), i, &stat))
       throw std::runtime_error("Failed to get file info at index: " + std::to_string(i));
 
     // 直接使用 ZIP 内路径，转换为本地分隔符
@@ -69,7 +69,7 @@ std::vector<std::string> ZipReader::file_list() const
   return files;
 }
 
-void ZipReader::extract_all(const std::string& output_folder)
+void ZipReader::extract_all(const std::string &output_folder)
 {
   if (!opened_) throw std::runtime_error("ZIP file not opened");
 
@@ -82,7 +82,7 @@ void ZipReader::extract_all(const std::string& output_folder)
       throw std::runtime_error("Failed to get file info at index: " + std::to_string(i));
 
     fs::path out_path = fs::path(output_folder) / stat.m_filename;
-    if (stat.m_is_directory) // 是目录则创建目录
+    if (stat.m_is_directory)  // 是目录则创建目录
     {
       fs::create_directories(out_path);
       continue;
@@ -96,7 +96,7 @@ void ZipReader::extract_all(const std::string& output_folder)
   }
 }
 
-void ZipReader::extract_file(const std::string& file_name_in_zip, const std::string& output_path)
+void ZipReader::extract_file(const std::string &file_name_in_zip, const std::string &output_path)
 {
   if (!opened_) throw std::runtime_error("ZIP file not opened");
 
@@ -114,7 +114,7 @@ void ZipReader::extract_file(const std::string& file_name_in_zip, const std::str
   }
 }
 
-std::vector<uint8_t> ZipReader::extract_file_to_memory(const std::string& file_name_in_zip)
+std::vector<uint8_t> ZipReader::extract_file_to_memory(const std::string &file_name_in_zip)
 {
   if (!opened_) throw std::runtime_error("ZIP file not opened");
 

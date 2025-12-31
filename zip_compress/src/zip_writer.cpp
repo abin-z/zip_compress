@@ -29,7 +29,7 @@ namespace fs = ghc::filesystem;
 namespace zip_compress
 {
 
-ZipWriter::ZipWriter(const std::string& zip_path) : finished_(false)
+ZipWriter::ZipWriter(const std::string &zip_path) : finished_(false)
 {
   zip_ = {};
   if (!mz_zip_writer_init_file(&zip_, zip_path.c_str(), 0)) throw std::runtime_error("Failed to create ZIP file");
@@ -40,7 +40,7 @@ ZipWriter::~ZipWriter()
   finish();
 }
 
-void ZipWriter::add_file(const std::string& file_path_str, const std::string& base_path_str)
+void ZipWriter::add_file(const std::string &file_path_str, const std::string &base_path_str)
 {
   fs::path file_path(file_path_str);
   if (!fs::is_regular_file(file_path)) return;
@@ -57,7 +57,7 @@ void ZipWriter::add_file(const std::string& file_path_str, const std::string& ba
   }
 }
 
-void ZipWriter::add_data(const std::string& filename_in_zip, const void* data, size_t size)
+void ZipWriter::add_data(const std::string &filename_in_zip, const void *data, size_t size)
 {
   if (data == nullptr)
   {
@@ -70,12 +70,12 @@ void ZipWriter::add_data(const std::string& filename_in_zip, const void* data, s
   }
 }
 
-void ZipWriter::add_folder(const std::string& folder_path_str)
+void ZipWriter::add_folder(const std::string &folder_path_str)
 {
   fs::path folder_path(folder_path_str);
   if (!fs::exists(folder_path)) throw std::runtime_error("Folder not exist: " + folder_path_str);
 
-  for (auto& entry : fs::recursive_directory_iterator(folder_path))
+  for (auto &entry : fs::recursive_directory_iterator(folder_path))
   {
     if (fs::is_regular_file(entry))
     {
