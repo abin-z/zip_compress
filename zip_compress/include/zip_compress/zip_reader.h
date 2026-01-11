@@ -32,7 +32,7 @@ class ZipReader
   ZipReader &operator=(ZipReader &&) = delete;
 
   // 获取 ZIP 内文件相对路径列表
-  std::vector<std::string> file_list() const;
+  std::vector<std::string> file_list();
 
   // 解压整个 ZIP 文件到指定目录（会覆盖已有文件）
   void extract_all(const std::string &output_folder);

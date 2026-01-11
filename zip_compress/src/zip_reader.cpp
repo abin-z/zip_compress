@@ -47,18 +47,18 @@ ZipReader::~ZipReader()
   }
 }
 
-std::vector<std::string> ZipReader::file_list() const
+std::vector<std::string> ZipReader::file_list()
 {
   if (!opened_) throw std::runtime_error("ZIP file not opened");
 
-  mz_uint num_files = mz_zip_reader_get_num_files(const_cast<mz_zip_archive *>(&zip_));
+  mz_uint num_files = mz_zip_reader_get_num_files((&zip_));
   std::vector<std::string> files;
   files.reserve(num_files);
 
   for (mz_uint i = 0; i < num_files; ++i)
   {
     mz_zip_archive_file_stat stat;
-    if (mz_zip_reader_file_stat(const_cast<mz_zip_archive *>(&zip_), i, &stat) == 0)
+    if (mz_zip_reader_file_stat((&zip_), i, &stat) == 0)
       throw std::runtime_error("Failed to get file info at index: " + std::to_string(i));
 
     // 直接使用 ZIP 内路径，转换为本地分隔符
