@@ -75,7 +75,7 @@ void ZipWriter::add_folder(const std::string &folder_path_str)
   fs::path folder_path(folder_path_str);
   if (!fs::exists(folder_path)) throw std::runtime_error("Folder not exist: " + folder_path_str);
 
-  for (auto &entry : fs::recursive_directory_iterator(folder_path))
+  for (const auto &entry : fs::recursive_directory_iterator(folder_path))
   {
     if (fs::is_regular_file(entry))
     {
