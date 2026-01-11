@@ -29,10 +29,9 @@ namespace fs = ghc::filesystem;
 namespace zip_compress
 {
 
-ZipWriter::ZipWriter(const std::string &zip_path) : finished_(false)
+ZipWriter::ZipWriter(const std::string &zip_path) : zip_{}, finished_(false)
 {
-  zip_ = {};
-  if (!mz_zip_writer_init_file(&zip_, zip_path.c_str(), 0)) throw std::runtime_error("Failed to create ZIP file");
+  if (mz_zip_writer_init_file(&zip_, zip_path.c_str(), 0) == 0) throw std::runtime_error("Failed to create ZIP file");
 }
 
 ZipWriter::~ZipWriter()
@@ -51,7 +50,8 @@ void ZipWriter::add_file(const std::string &file_path_str, const std::string &ba
   else
     rel_path = file_path.lexically_relative(base_path_str);
 
-  if (!mz_zip_writer_add_file(&zip_, rel_path.string().c_str(), file_path_str.c_str(), nullptr, 0, MZ_DEFAULT_LEVEL))
+  if (mz_zip_writer_add_file(&zip_, rel_path.string().c_str(), file_path_str.c_str(), nullptr, 0, MZ_DEFAULT_LEVEL) ==
+      0)
   {
     throw std::runtime_error("Failed to add file to ZIP: " + file_path_str);
   }
@@ -64,7 +64,7 @@ void ZipWriter::add_data(const std::string &filename_in_zip, const void *data, s
     throw std::invalid_argument("add_data: data is null");
   }
 
-  if (!mz_zip_writer_add_mem(&zip_, filename_in_zip.c_str(), data, size, MZ_DEFAULT_LEVEL))
+  if (mz_zip_writer_add_mem(&zip_, filename_in_zip.c_str(), data, size, MZ_DEFAULT_LEVEL) == 0)
   {
     throw std::runtime_error("Failed to add data to ZIP: " + filename_in_zip);
   }

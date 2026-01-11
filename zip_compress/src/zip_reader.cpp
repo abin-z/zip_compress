@@ -29,10 +29,9 @@ namespace fs = ghc::filesystem;
 namespace zip_compress
 {
 
-ZipReader::ZipReader(const std::string &zip_path) : opened_(false)
+ZipReader::ZipReader(const std::string &zip_path) : zip_{}, opened_(false)
 {
-  zip_ = {};
-  if (!mz_zip_reader_init_file(&zip_, zip_path.c_str(), 0))
+  if (mz_zip_reader_init_file(&zip_, zip_path.c_str(), 0) == 0)
   {
     throw std::runtime_error("Failed to open ZIP file: " + zip_path);
   }
@@ -59,7 +58,7 @@ std::vector<std::string> ZipReader::file_list() const
   for (mz_uint i = 0; i < num_files; ++i)
   {
     mz_zip_archive_file_stat stat;
-    if (!mz_zip_reader_file_stat(const_cast<mz_zip_archive *>(&zip_), i, &stat))
+    if (mz_zip_reader_file_stat(const_cast<mz_zip_archive *>(&zip_), i, &stat) == 0)
       throw std::runtime_error("Failed to get file info at index: " + std::to_string(i));
 
     // 直接使用 ZIP 内路径，转换为本地分隔符
@@ -78,18 +77,18 @@ void ZipReader::extract_all(const std::string &output_folder)
   for (mz_uint i = 0; i < num_files; ++i)
   {
     mz_zip_archive_file_stat stat;
-    if (!mz_zip_reader_file_stat(&zip_, i, &stat))
+    if (mz_zip_reader_file_stat(&zip_, i, &stat) == 0)
       throw std::runtime_error("Failed to get file info at index: " + std::to_string(i));
 
     fs::path out_path = fs::path(output_folder) / stat.m_filename;
-    if (stat.m_is_directory)  // 是目录则创建目录
+    if (stat.m_is_directory != 0)  // 是目录则创建目录
     {
       fs::create_directories(out_path);
       continue;
     }
     fs::create_directories(out_path.parent_path());
 
-    if (!mz_zip_reader_extract_to_file(&zip_, i, out_path.string().c_str(), 0))
+    if (mz_zip_reader_extract_to_file(&zip_, i, out_path.string().c_str(), 0) == 0)
     {
       throw std::runtime_error("Failed to extract file: " + out_path.string());
     }
@@ -108,7 +107,7 @@ void ZipReader::extract_file(const std::string &file_name_in_zip, const std::str
 
   fs::create_directories(fs::path(output_path).parent_path());
 
-  if (!mz_zip_reader_extract_to_file(&zip_, file_index, output_path.c_str(), 0))
+  if (mz_zip_reader_extract_to_file(&zip_, file_index, output_path.c_str(), 0) == 0)
   {
     throw std::runtime_error("Failed to extract file: " + output_path);
   }
@@ -125,13 +124,13 @@ std::vector<uint8_t> ZipReader::extract_file_to_memory(const std::string &file_n
   }
 
   mz_zip_archive_file_stat stat;
-  if (!mz_zip_reader_file_stat(&zip_, file_index, &stat))
+  if (mz_zip_reader_file_stat(&zip_, file_index, &stat) == 0)
   {
     throw std::runtime_error("Failed to get file info: " + file_name_in_zip);
   }
 
   std::vector<uint8_t> buffer(stat.m_uncomp_size);
-  if (!mz_zip_reader_extract_to_mem(&zip_, file_index, buffer.data(), buffer.size(), 0))
+  if (mz_zip_reader_extract_to_mem(&zip_, file_index, buffer.data(), buffer.size(), 0) == 0)
   {
     throw std::runtime_error("Failed to extract file to memory: " + file_name_in_zip);
   }
