@@ -19,8 +19,7 @@
 namespace zip_compress
 {
 
-class ZipReader
-{
+class ZipReader {
  public:
   explicit ZipReader(const std::string &zip_path);
   ~ZipReader();

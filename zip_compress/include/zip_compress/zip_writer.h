@@ -17,8 +17,7 @@
 namespace zip_compress
 {
 
-class ZipWriter
-{
+class ZipWriter {
  public:
   explicit ZipWriter(const std::string &zip_path);
   ~ZipWriter();
